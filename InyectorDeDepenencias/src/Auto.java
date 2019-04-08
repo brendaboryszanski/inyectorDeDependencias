@@ -1,6 +1,6 @@
 public class Auto {
 
-	@Injected
+	@Injected(count = 2)
 	public Motor motor;
 	
 	@Injected

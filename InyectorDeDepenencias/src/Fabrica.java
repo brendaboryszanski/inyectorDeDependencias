@@ -7,6 +7,7 @@ public class Fabrica {
              ) {
             if(atributo.getAnnotation(Injected.class) != null){
                 atributo.set(cosa, crear(atributo.getType()));
+                System.out.println("Muestro el count:" + atributo.getAnnotation(Injected.class).count());
             }
         }
         return cosa;
