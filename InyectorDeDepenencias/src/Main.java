@@ -8,5 +8,7 @@ public class Main {
 		System.out.println("El auto tiene palanca " + auto.palanca);
 		System.out.println("El auto tiene motor " + auto.motor);
 		System.out.println("El auto no tiene iniciallizada la otra palanca " + auto.palancaNoInicializada);
+		System.out.println("La lista esta en "+ auto.palanca2);
+		System.out.println("La interfaz se hizo " + auto.asiento);
 	}
 }
