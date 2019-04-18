@@ -1,29 +1,50 @@
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.event.ListSelectionEvent;
-
 public class Fabrica {
+
+	private static List<Object> listaDeSingletons = new ArrayList<>();
+
 	public static <T> T crear(Class<T> clase) throws InstantiationException, IllegalAccessException {
 		T cosa = clase.newInstance();
+		boolean a = false;
 		for (Field atributo : clase.getFields()) {
 			if (atributo.getAnnotation(Injected.class) != null) {
-				// Averiguo si es una lista
-				if (Collection.class.isAssignableFrom(atributo.getType())) {
-						atributo.set(cosa, crearLista(atributo, atributo.getAnnotation(Injected.class).count()));
-				}else {
-					if(!atributo.getAnnotation(Injected.class).implementation().equals(Object.class)) {
-						atributo.set(cosa, crear(atributo.getAnnotation(Injected.class).implementation()));
-					}else {
-						atributo.set(cosa, crear(atributo.getType()));
+				if(atributo.getAnnotation(Injected.class).singleton()){
+					
+					Iterator<Object> it = listaDeSingletons.iterator();
+					while(it.hasNext()) {
+						Object o = it.next();
+						if(o.getClass().equals(atributo.getClass())) {
+							atributo.set(cosa, o);
+							a = true;
+							break;
+						}
 					}
-				}
+					if(!a) {
+						//Si no lo encontras, lo creas y lo metes
+						atributo.set(cosa, crear(atributo.getType()));
+						listaDeSingletons.add(atributo);
+					}
+					
+				} else {
 
+					if (Collection.class.isAssignableFrom(atributo.getType())) { //Es una lista?
+						atributo.set(cosa, crearLista(atributo, atributo.getAnnotation(Injected.class).count()));
+					} else {
+						if(!atributo.getAnnotation(Injected.class).implementation().equals(Object.class)) {
+						atributo.set(cosa, crear(atributo.getAnnotation(Injected.class).implementation()));
+						} else {
+						atributo.set(cosa, crear(atributo.getType()));
+						}
+					}
+
+				}
 			}
 		}
 		return cosa;
