@@ -8,13 +8,17 @@ public class Auto {
 	@Injected
 	public Motor motor;
 	
-	@Injected
+	@Injected 
 	public Palanca palanca;
 	
 	
 	@Injected(count = 4)
 	public List<Palanca> palanca2;
-	
+
+	@Injected(singleton=true)
 	public Palanca palancaNoInicializada;
+	
+	@Injected(singleton=true)
+	public Palanca palancaConS;
 	
 }

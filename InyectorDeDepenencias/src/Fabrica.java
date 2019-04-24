@@ -3,34 +3,37 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Hashtable;
 
 public class Fabrica {
 
-	private static List<Object> listaDeSingletons = new ArrayList<>();
+	private static HashMap<Class<?>, Object> singletons = new HashMap<Class<?>,  Object>();
 
-	public static <T> T crear(Class<T> clase) throws InstantiationException, IllegalAccessException {
+	public static <T,P> T crear(Class<T> clase) throws InstantiationException, IllegalAccessException {
 		T cosa = clase.newInstance();
-		boolean a = false;
+		//boolean a = false;
 		for (Field atributo : clase.getFields()) {
 			if (atributo.getAnnotation(Injected.class) != null) {
 				if(atributo.getAnnotation(Injected.class).singleton()){
 					
-					Iterator<Object> it = listaDeSingletons.iterator();
-					while(it.hasNext()) {
-						Object o = it.next();
-						if(o.getClass().equals(atributo.getClass())) {
-							atributo.set(cosa, o);
-							a = true;
-							break;
-						}
+					
+					if(buscarPath(atributo.getType())!=null) {
+						
+						atributo.set(cosa, buscarPath(atributo.getType()));
+						
+						
+					}else {
+						/* P a = atributo.getClass().newInstance();
+						P singleton=(P) crear(atributo.getClass()); */
+						singletons.put(atributo.getType(), crear(atributo.getType()));
+						atributo.set(cosa, (buscarPath(atributo.getType())));
+						
 					}
-					if(!a) {
-						//Si no lo encontras, lo creas y lo metes
-						atributo.set(cosa, crear(atributo.getType()));
-						listaDeSingletons.add(atributo);
-					}
+					
+					
 					
 				} else {
 
@@ -46,7 +49,7 @@ public class Fabrica {
 
 				}
 			}
-		}
+		} 
 		return cosa;
 	}
 
@@ -59,6 +62,18 @@ public class Fabrica {
 		}
 		return lista; 
 	}
+	
+	public static  Object buscarPath(Class<?> path){
+		return singletons.get(path);
+		
+	}
+	
+	/*public static singleton() {
+		
+		
+		
+		
+	}*/
 }
 /*
  * habria que hacer un if anidado? necesitamos saber si dice injected y si dice

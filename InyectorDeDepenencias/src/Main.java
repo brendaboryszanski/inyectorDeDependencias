@@ -10,5 +10,6 @@ public class Main {
 		System.out.println("El auto no tiene iniciallizada la otra palanca " + auto.palancaNoInicializada);
 		System.out.println("La lista esta en "+ auto.palanca2);
 		System.out.println("La interfaz se hizo " + auto.asiento);
+		System.out.println("segunda palanca con singleton"+auto.palancaConS);
 	}
 }
