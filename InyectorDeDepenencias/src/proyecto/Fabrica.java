@@ -1,6 +1,7 @@
 package proyecto;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.management.RuntimeErrorException;
@@ -77,15 +79,19 @@ public class Fabrica {
 		} 
 		return atributoPadre;
 	}
-	public static <T, P> void crearImplementacionDeInterfaz(Field atributo, T padre) throws IllegalArgumentException, IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
+	public static <T,W, P> void crearImplementacionDeInterfaz(Field atributo, T padre) throws IllegalArgumentException, IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
 		List<Class> classes = Arrays.asList(BuscadorDePaquetes.getClasses("proyecto"));
-		List<Class> clasesQueImplementan = classes.stream().filter(clase -> atributo.getClass().isAssignableFrom(clase)).collect(Collectors.toList());
-		if(classes.size() != 1) {
-			throw new RuntimeException("Mas de una implementacion para el atributo");
+		
+		Class<P>interfaz= (Class<P>) atributo.getType();
+		
+		List<Class> clasesQueImplementan = classes.stream().filter(clase->pertenece(clase.getInterfaces(),interfaz)).collect(Collectors.toList());
+		if(clasesQueImplementan.size() != 1) {
+			throw new RuntimeException("Mas de una implementacion para el atributo"+ atributo.getName());
 		}else {
-			Class instancia = classes.get(0);
+			
+		Class instancia =clasesQueImplementan.get(0) ;
 			atributo.set(padre, crear(instancia));
-		}
+			}
 	}
 	public static boolean isImplementation(Field atributo) {
 		return !atributo.getAnnotation(Injected.class).implementation().equals(Object.class);
@@ -100,6 +106,21 @@ public class Fabrica {
 		return lista; 
 	}
 	
+	public static <T>boolean pertenece (T array[],T clase){ 
+		
+		boolean condicion=false;
+		int i=0;
+		while(!condicion&&i<array.length) {	
+			condicion= array[i].toString().equals(clase.toString());
+			i++;
+			}
+		return condicion;
+			
+			
+		}
+		
+		
+
 	public static Object buscarObjeto(Class<?> objeto){
 		return singletons.get(objeto);
 		
