@@ -1,9 +1,16 @@
+package proyecto;
 import java.util.List;
 
+
+@Component
 public class Auto {
 
 	@Injected(implementation = AsientoDeCuero.class)
 	public InterfazAsiento asiento;
+	
+
+	@Injected
+	public InterfazAsiento asientoAndaPorfis;
 	
 	@Injected
 	public Motor motor;
@@ -15,10 +22,10 @@ public class Auto {
 	@Injected(count = 4)
 	public List<Palanca> palanca2;
 
-	@Injected(singleton=true)
+	@Injected
 	public Palanca palancaNoInicializada;
 	
-	@Injected(singleton=true)
+	@Injected
 	public Palanca palancaConS;
 	
 }
