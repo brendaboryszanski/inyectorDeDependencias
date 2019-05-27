@@ -80,7 +80,7 @@ public class Fabrica {
 		return atributoPadre;
 	}
 	public static <T,W, P> void crearImplementacionDeInterfaz(Field atributo, T padre) throws IllegalArgumentException, IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
-		List<Class> classes = Arrays.asList(BuscadorDePaquetes.getClasses("proyecto"));
+		List<Class> classes = Arrays.asList(BuscadorDePaquetes.getClasses("demo")); //ESTO ESTA HARDCODEADO
 		
 		Class<P>interfaz= (Class<P>) atributo.getType();
 		
