@@ -7,16 +7,16 @@ import proyecto.Component;
 public class TheBeatles implements Banda
 {
    @Injected(implementation=GeorgeHarrison.class)
-   private Guitarrista primeraGuitarra;
+   public Guitarrista primeraGuitarra;
 
    @Injected(implementation=JohnLennon.class)
-   private Guitarrista segundaGuitarra;
+   public Guitarrista segundaGuitarra;
 
    @Injected
-   private Bajista bajista;
+   public Bajista bajista;
 
    @Injected
-   private Baterista baterista;
+   public Baterista baterista;
 
    public String toString()
    {
